@@ -6,9 +6,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.queue.backend.dto.queue.DashboardResponse;
+import com.queue.backend.dto.queue.QueueHistoryResponse;
+import com.queue.backend.dto.queue.QueueOperationResponse;
 import com.queue.backend.dto.queue.QueueRequest;
 import com.queue.backend.dto.queue.QueueResponse;
 import com.queue.backend.dto.queue.QueueStatusResponse;
+import com.queue.backend.dto.queue.QueueUpdateResponse;
 import com.queue.backend.entity.Queue;
 import com.queue.backend.enums.QueueStatus;
 import com.queue.backend.repository.QueueRepository;
@@ -65,10 +68,71 @@ public class QueueServiceImpl implements QueueService {
         long waiting = queueRepository.countByStatus(QueueStatus.WAITING);
         long completed = queueRepository.countByStatus(QueueStatus.COMPLETED);
 
-        return new DashboardResponse(
-                total,
-                waiting,
-                completed
+        return new DashboardResponse(total, waiting, completed);
+    }
+
+    @Override
+    public QueueUpdateResponse callNextQueue(Long id) {
+
+        Queue queue = queueRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Queue not found"));
+
+        queue.setStatus(QueueStatus.CALLED);
+        queueRepository.save(queue);
+
+        return new QueueUpdateResponse(
+                queue.getId(),
+                queue.getTokenNumber(),
+                queue.getStatus(),
+                "Queue called successfully"
         );
+    }
+
+    @Override
+    public QueueUpdateResponse completeQueue(Long id) {
+
+        Queue queue = queueRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Queue not found"));
+
+        queue.setStatus(QueueStatus.COMPLETED);
+        queueRepository.save(queue);
+
+        return new QueueUpdateResponse(
+                queue.getId(),
+                queue.getTokenNumber(),
+                queue.getStatus(),
+                "Queue completed successfully"
+        );
+    }
+
+    @Override
+    public QueueUpdateResponse cancelQueue(Long id) {
+
+        Queue queue = queueRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Queue not found"));
+
+        queue.setStatus(QueueStatus.CANCELLED);
+        queueRepository.save(queue);
+
+        return new QueueUpdateResponse(
+                queue.getId(),
+                queue.getTokenNumber(),
+                queue.getStatus(),
+                "Queue cancelled successfully"
+        );
+    }
+
+    @Override
+    public List<QueueHistoryResponse> getQueueHistory() {
+
+        return queueRepository.findAll()
+                .stream()
+                .map(queue -> new QueueHistoryResponse(
+                        queue.getId(),
+                        queue.getTokenNumber(),
+                        queue.getDepartment(),
+                        queue.getStatus(),
+                        queue.getCreatedAt()))
+                .toList();
     }
 }

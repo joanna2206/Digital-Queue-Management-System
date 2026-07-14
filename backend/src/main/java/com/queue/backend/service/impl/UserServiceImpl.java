@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import com.queue.backend.dto.auth.LoginRequest;
 import com.queue.backend.dto.auth.LoginResponse;
 import com.queue.backend.dto.auth.RegisterRequest;
+import com.queue.backend.dto.user.ChangePasswordRequest;
+import com.queue.backend.dto.user.UpdateProfileRequest;
+import com.queue.backend.dto.user.UserProfileResponse;
 import com.queue.backend.entity.User;
 import com.queue.backend.exception.ResourceAlreadyExistsException;
 import com.queue.backend.repository.UserRepository;
@@ -71,5 +74,63 @@ public class UserServiceImpl implements UserService {
                 user.getFullName(),
                 user.getRole()
         );
+    }
+
+    @Override
+    public UserProfileResponse getProfile(String email) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return new UserProfileResponse(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getRole()
+        );
+    }
+
+    @Override
+    public UserProfileResponse updateProfile(
+            String email,
+            UpdateProfileRequest request) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setFullName(request.getFullName());
+        user.setPhone(request.getPhone());
+
+        userRepository.save(user);
+
+        return new UserProfileResponse(
+                user.getId(),
+                user.getFullName(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getRole()
+        );
+    }
+
+    @Override
+    public void changePassword(
+            String email,
+            ChangePasswordRequest request) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(
+                request.getCurrentPassword(),
+                user.getPassword())) {
+
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        user.setPassword(
+                passwordEncoder.encode(request.getNewPassword()));
+
+        userRepository.save(user);
     }
 }

@@ -4,16 +4,14 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.queue.backend.dto.queue.DashboardResponse;
+import com.queue.backend.dto.queue.QueueHistoryResponse;
 import com.queue.backend.dto.queue.QueueRequest;
 import com.queue.backend.dto.queue.QueueResponse;
 import com.queue.backend.dto.queue.QueueStatusResponse;
+import com.queue.backend.dto.queue.QueueUpdateResponse;
 import com.queue.backend.service.QueueService;
 
 import jakarta.validation.Valid;
@@ -45,5 +43,25 @@ public class QueueController {
     @GetMapping("/dashboard")
     public DashboardResponse getDashboard() {
         return queueService.getDashboard();
+    }
+
+    @PutMapping("/{id}/call")
+    public QueueUpdateResponse callNextQueue(@PathVariable Long id) {
+        return queueService.callNextQueue(id);
+    }
+
+    @PutMapping("/{id}/complete")
+    public QueueUpdateResponse completeQueue(@PathVariable Long id) {
+        return queueService.completeQueue(id);
+    }
+
+    @PutMapping("/{id}/cancel")
+    public QueueUpdateResponse cancelQueue(@PathVariable Long id) {
+        return queueService.cancelQueue(id);
+    }
+
+    @GetMapping("/history")
+    public List<QueueHistoryResponse> getQueueHistory() {
+        return queueService.getQueueHistory();
     }
 }
