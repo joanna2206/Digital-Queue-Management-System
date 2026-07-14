@@ -1,4 +1,4 @@
-package com.queue.backend.dto;
+package com.queue.backend.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.queue.backend.dto.LoginRequest;
-import com.queue.backend.dto.LoginResponse;
-import com.queue.backend.dto.RegisterRequest;
+import com.queue.backend.dto.auth.LoginRequest;
+import com.queue.backend.dto.auth.LoginResponse;
+import com.queue.backend.dto.auth.RegisterRequest;
 import com.queue.backend.service.UserService;
 
 import jakarta.validation.Valid;

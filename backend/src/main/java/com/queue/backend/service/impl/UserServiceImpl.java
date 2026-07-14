@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.queue.backend.dto.LoginRequest;
-import com.queue.backend.dto.LoginResponse;
-import com.queue.backend.dto.RegisterRequest;
+import com.queue.backend.dto.auth.LoginRequest;
+import com.queue.backend.dto.auth.LoginResponse;
+import com.queue.backend.dto.auth.RegisterRequest;
 import com.queue.backend.entity.User;
 import com.queue.backend.exception.ResourceAlreadyExistsException;
 import com.queue.backend.repository.UserRepository;
