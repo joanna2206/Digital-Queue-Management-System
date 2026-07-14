@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.queue.backend.dto.LoginRequest;
+import com.queue.backend.dto.LoginResponse;
 import com.queue.backend.dto.RegisterRequest;
 import com.queue.backend.service.UserService;
 
@@ -28,5 +30,11 @@ public class AuthController {
         userService.registerUser(request);
 
         return new ResponseEntity<>("User registered successfully.", HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> loginUser(@Valid @RequestBody LoginRequest request) {
+
+        return ResponseEntity.ok(userService.loginUser(request));
     }
 }
